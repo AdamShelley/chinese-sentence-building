@@ -6,7 +6,6 @@ public class Main {
 
         HashMap<String, List<String>> scenarios = new HashMap<>();
 
-
         List<String> responses = Arrays.asList("这咖啡太凉了", "咖啡有点儿凉");
         scenarios.put("Complain about cold coffee", responses);
 
@@ -16,21 +15,41 @@ public class Main {
 
         scenarios.put("Say you're running late", Arrays.asList("我要迟到了", "我可能会晚一点", "不好意思我来晚了"));
 
+        HashMap<String, List<String>> copiedScenarios = new HashMap<>(scenarios);
 
+        HashMap<String, String> userResponses = new HashMap<>();
+        HashMap<String, List<String>> completedScenarios = new HashMap<>();
+
+        int counter = 0;
         Random rand = new Random();
-        String[] keys = scenarios.keySet().toArray(new String[0]);
-        String randomKey = keys[rand.nextInt(keys.length)];
-
-        System.out.println("Scenario: " + randomKey);
-
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Your response: ");
-        String userInput = scanner.nextLine();
 
-        List<String> answers = scenarios.get(randomKey);
-        System.out.println("\nSample responses:");
-        for (String answer : answers) {
-            System.out.println("- " + answer);
+        while (counter < 5 && !copiedScenarios.isEmpty()) {
+
+            String[] keys = copiedScenarios.keySet().toArray(new String[0]);
+            String randomKey = keys[rand.nextInt(keys.length)];
+
+            System.out.println("Scenario: " + randomKey);
+
+            System.out.print("Your response: ");
+            String userInput = scanner.nextLine();
+
+            List<String> answers = copiedScenarios.get(randomKey);
+            System.out.println("\nSample responses:");
+            for (String answer : answers) {
+                System.out.println("- " + answer);
+            }
+
+            userResponses.put(randomKey, userInput);
+            completedScenarios.put(randomKey, answers);
+
+            copiedScenarios.remove(randomKey);
+
+            counter++;
         }
+
+        System.out.println("You have finished: Here is a summary: " );
+
+
     }
 }
