@@ -50,6 +50,12 @@ public class Main {
 
         System.out.println("You have finished: Here is a summary: " );
 
+        for (String key : completedScenarios.keySet()) {
+            System.out.println("Scenario: " + key);
+            System.out.println("You typed: " + userResponses.get(key));
+            System.out.println("Correct answers: " + completedScenarios.get(key));
+            System.out.println();
+        }
 
     }
 }
