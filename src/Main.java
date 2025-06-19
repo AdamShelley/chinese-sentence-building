@@ -1,30 +1,46 @@
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 
 public class Main {
-    public static void main(String args[]) {
-
-        HashMap<String, List<String>> scenarios = new HashMap<>();
-
-        List<String> responses = Arrays.asList("这咖啡太凉了", "咖啡有点儿凉");
-        scenarios.put("Complain about cold coffee", responses);
-
-        scenarios.put("Complain about hot weather", Arrays.asList("今天太热了", "这天气热死了", "热得受不了"));
-
-        scenarios.put("Ask for the bill at restaurant", Arrays.asList("买单", "结账", "请问可以买单吗"));
-
-        scenarios.put("Say you're running late", Arrays.asList("我要迟到了", "我可能会晚一点", "不好意思我来晚了"));
-
-        HashMap<String, List<String>> copiedScenarios = new HashMap<>(scenarios);
+    public static void main(String[] args) {
+        HashMap<String, List<String>> scenarios = loadScenarios();
 
         HashMap<String, String> userResponses = new HashMap<>();
         HashMap<String, List<String>> completedScenarios = new HashMap<>();
 
+        runPracticeSession(scenarios, userResponses, completedScenarios, 5);
+        displaySummary(userResponses, completedScenarios);
+    }
+
+    public static HashMap<String, List<String>> loadScenarios() {
+        try {
+            String jsonContent = Files.readString(Paths.get("src/scenarios.json"));
+            // transform json content
+            Gson gson = new Gson();
+            TypeToken<HashMap<String, List<String>>> typeToken = new TypeToken<HashMap<String, List<String>>>() {
+            };
+            return gson.fromJson(jsonContent, typeToken.getType());
+
+        } catch (Exception e) {
+            return new HashMap<>();
+        }
+    }
+
+    public static void runPracticeSession(HashMap<String, List<String>> scenarios,
+                                          HashMap<String, String> userResponses,
+                                          HashMap<String, List<String>> completedScenarios,
+                                          int rounds) {
         int counter = 0;
+        HashMap<String, List<String>> copiedScenarios = new HashMap<>(scenarios);
         Random rand = new Random();
         Scanner scanner = new Scanner(System.in);
 
-        while (counter < 5 && !copiedScenarios.isEmpty()) {
+        while (counter < rounds && !copiedScenarios.isEmpty()) {
 
             String[] keys = copiedScenarios.keySet().toArray(new String[0]);
             String randomKey = keys[rand.nextInt(keys.length)];
@@ -47,8 +63,10 @@ public class Main {
 
             counter++;
         }
+    }
 
-        System.out.println("You have finished: Here is a summary: " );
+    public static void displaySummary(HashMap<String, String> userResponses, HashMap<String, List<String>> completedScenarios){
+        System.out.println("You have finished, Here is a summary: ");
 
         for (String key : completedScenarios.keySet()) {
             System.out.println("Scenario: " + key);
@@ -56,6 +74,5 @@ public class Main {
             System.out.println("Correct answers: " + completedScenarios.get(key));
             System.out.println();
         }
-
     }
 }
